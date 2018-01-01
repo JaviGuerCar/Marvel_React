@@ -11,15 +11,16 @@ export default class CharactersCell extends Component {
 
     render() {
         const { item, onSelect } = this.props
-        const nombre = item.name ? item.name : ''
-        const image = item.thumbnail ? {  uri: item.thumbnail.path + '/landscape_small.' + item.thumbnail.extension  } : null
+        const name = item.name ? item.name : ''
+        //const image = item.image_dir ? { uri: item.image_dir } : require('marvel_react/src/resources/marvel.jpeg')
+        const image = item.thumbnail ? {  uri: item.thumbnail.path + '/landscape_large.' + item.thumbnail.extension  } : require('marvel_react/src/resources/marvel.jpeg')
 
         console.log('image', image)
         return (
             <TouchableOpacity onPress={ () => onSelect(item)}>
                 <Image source={ image } style={ styles.imageStyle } resizeMode={'cover'}/>
                 <View style={styles.textContainer}>
-                    <Text style={styles.name}>{ nombre } </Text> 
+                    <Text style={styles.name}>{ name } </Text> 
                 </View>
             </TouchableOpacity>
         )
@@ -29,7 +30,7 @@ export default class CharactersCell extends Component {
 const styles = StyleSheet.create({
     imageStyle: {
        width: '100%',
-       height: 250,
+       height: 200,
     },
     textContainer: {
         flexDirection: 'row',

@@ -17,7 +17,7 @@ export function fetchCharactersList() {
     return (dispatch, getState) => {
 
         const fetchURL = constants.CHARACTERS + constants.TIME_STAMP + constants.PUBLIC_API_KEY + constants.HASH
-        
+
         fetch(fetchURL).then((response) => {
             console.log('axios get response: ', response);
             const list = response.data && response.data.results ? response.data.results : []

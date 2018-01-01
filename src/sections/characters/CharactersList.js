@@ -45,7 +45,7 @@ class CharactersList extends Component {
                     data = { this.props.list }
                     renderItem = {({item, index}) => this.renderItem(item, index)}
                     keyExtractor = { (item, index) => item.id }
-                    extraData = { this.state }
+                    extraData = { this.props }
                 />
             </View> 
         )
