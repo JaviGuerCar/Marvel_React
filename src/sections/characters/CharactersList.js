@@ -1,60 +1,48 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import { AsyncCalls, Colors } from 'marvel_react/src/commons'
-import { fetch } from 'marvel_react/src/webservices/webservices'
 
-export default class CharactersList extends Component {
+import CharactersCell from './CharactersCell'
 
-    constructor(props){
+// REDUX
+import { connect } from 'react-redux'
+import * as CharactersActions from 'marvel_react/src/redux/actions/characters'
+
+class CharactersList extends Component {
+    
+    constructor(props) {
         super(props)
+
         this.state = {
             list: [],
-            selected: null
+            selected: null,
         }
     }
-
+    
     componentWillMount(){  
-        fetch('/personajes').then((response) => {
-            console.log('axios get response: ', response);
-            this.setState({ list: response.records })
-        })
-        .catch((error) => {
-            console.log('axios get error: ', error);
-        });
+        this.props.fetchCharactersList()
     }
 
-    checkIsSelected(item){
-        if (this.state.selected && this.state.selected.nombre == item.nombre){
-            return { backgroundColor: 'purple' }
-        } else {
-            return { backgroundColor: 'pink' }
-        }
-    }
-
-    onSelectedItem(item){
-        this.setState({selected: item})
+    onSelect(character){
+        console.log('character: ', character)
+        this.setState({ selected: character })
     }
 
     renderItem(item, index){
-        const cellStyle = this.checkIsSelected(item)
         return (
-            <View style={[styles.cell, cellStyle]} key={index}>
-                <Text>{item.nombre}</Text>
-                <Button
-                    title={'Seleccionar casa'}
-                    onPress={ () => this.onSelectedItem(item) }
-                />
-            </View>
+            <CharactersCell 
+                item = { item } 
+                onSelect = { (character) => this.onSelect(character) }
+            />
         )
     }
 
     render() {
-        const nombre = this.state.selected ? this.state.selected.nombre : 'Personaje'
+        console.log('this.props.list: ', this.props.list)
         return (
-            <View>
-                <Text style={styles.title}>{ nombre }</Text>
+            <View style={styles.container}>
                 <FlatList
-                    data = { this.state.list }
+                    data = { this.props.list }
                     renderItem = {({item, index}) => this.renderItem(item, index)}
                     keyExtractor = { (item, index) => item.id }
                     extraData = { this.state }
@@ -64,11 +52,32 @@ export default class CharactersList extends Component {
     }
 }
 
+const mapStateToProps = (state) => { 
+    return { 
+        list: state.characters.list
+    }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchCharactersList: () => {
+            dispatch(CharactersActions.fetchCharactersList())
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CharactersList)
+
 const styles = StyleSheet.create({
+    contaniner: {
+        flex:1,
+        backgroundColor: Colors.background,
+        paddingVertical: 20
+    },
     cell: {
         height: 100,
         backgroundColor: '#cccccc',
-        marginVertical:10,
+        marginVertical: 10,
         padding: 10
     },
     title:{ 
