@@ -7,24 +7,42 @@ import * as constants from 'marvel_react/src/webservices/constants'
 function updateCharactersList(value) {
     return {
         type: types.CHARACTERS_UPDATE_LIST,
-        value
+        value: value
     }
     
+}
+
+function setCharactersFetching(value){
+    return {
+        type: types.CHARACTERS_SET_FETCHING,
+        value: value
+    }
+}
+
+export function updateCharacterSelected(value){
+    return {
+        type: types.CHARACTERS_UPDATE_CHARACTER,
+        value: value
+    }
 }
 
 // Función para descargar el listado
 export function fetchCharactersList() {
     return (dispatch, getState) => {
 
+        dispatch(setCharactersFetching(true))
         const fetchURL = constants.CHARACTERS + constants.TIME_STAMP + constants.PUBLIC_API_KEY + constants.HASH
 
         fetch(fetchURL).then((response) => {
             console.log('axios get response: ', response);
             const list = response.data && response.data.results ? response.data.results : []
+            dispatch(setCharactersFetching(false))
             dispatch(updateCharactersList(list))
+            
         })
         .catch((error) => {
             console.log('axios get error: ', error);
+            dispatch(setCharactersFetching(false))
         });
 
     }

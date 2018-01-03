@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 
+
 export default class CharactersCell extends Component {
 
     // Props por defecto, para que la App no casque si no se las paso
@@ -12,10 +13,9 @@ export default class CharactersCell extends Component {
     render() {
         const { item, onSelect } = this.props
         const name = item.name ? item.name : ''
-        //const image = item.image_dir ? { uri: item.image_dir } : require('marvel_react/src/resources/marvel.jpeg')
-        const image = item.thumbnail ? {  uri: item.thumbnail.path + '/landscape_large.' + item.thumbnail.extension  } : require('marvel_react/src/resources/marvel.jpeg')
+        const image = item && item.thumbnail ? {  uri: item.thumbnail.path + '/landscape_large.' + item.thumbnail.extension  } : null
+        image.uri = image.uri.replace("http", "https")
 
-        console.log('image', image)
         return (
             <TouchableOpacity onPress={ () => onSelect(item)}>
                 <Image source={ image } style={ styles.imageStyle } resizeMode={'cover'}/>

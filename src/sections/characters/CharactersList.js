@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Button, ActivityIndicator } from 'react-native';
 import { AsyncCalls, Colors } from 'marvel_react/src/commons'
+import { Actions } from 'react-native-router-flux'
 
 import CharactersCell from './CharactersCell'
 
@@ -10,22 +11,13 @@ import * as CharactersActions from 'marvel_react/src/redux/actions/characters'
 
 class CharactersList extends Component {
     
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            list: [],
-            selected: null,
-        }
-    }
-    
     componentWillMount(){  
         this.props.fetchCharactersList()
     }
 
     onSelect(character){
-        console.log('character: ', character)
-        this.setState({ selected: character })
+        //console.log('character: ', character)
+        this.props.updateSelected(character)
     }
 
     renderItem(item, index){
@@ -37,8 +29,12 @@ class CharactersList extends Component {
         )
     }
 
+    renderFooter(){
+        return <ActivityIndicator amimating={this.props.isFetching} size='large' style={styles.spinner}/>
+    }
+
     render() {
-        console.log('this.props.list: ', this.props.list)
+        console.log('this.props.character: ', this.props.character)
         return (
             <View style={styles.container}>
                 <FlatList
@@ -46,6 +42,7 @@ class CharactersList extends Component {
                     renderItem = {({item, index}) => this.renderItem(item, index)}
                     keyExtractor = { (item, index) => item.id }
                     extraData = { this.props }
+                    ListFooterComponent={() => this.renderFooter()}
                 />
             </View> 
         )
@@ -54,7 +51,8 @@ class CharactersList extends Component {
 
 const mapStateToProps = (state) => { 
     return { 
-        list: state.characters.list
+        list: state.characters.list,
+        character: state.characters.item
     }
 }
 
@@ -62,6 +60,11 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchCharactersList: () => {
             dispatch(CharactersActions.fetchCharactersList())
+        },
+
+        updateSelected: (character) => {
+            dispatch(CharactersActions.updateCharacterSelected(character))
+            Actions.CharacterView({ title: character.name })
         }
     }
 }
@@ -84,5 +87,9 @@ const styles = StyleSheet.create({
         padding: 10, 
         textAlign: 'center', 
         fontSize: 20
+    },
+    spinner: {
+        marginTop: 250,
+        color: 'grey'
     }
 });
