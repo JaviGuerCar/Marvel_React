@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Button, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import { AsyncCalls, Colors } from 'marvel_react/src/commons'
 import { Actions } from 'react-native-router-flux'
-
+import Spinner from 'react-native-spinkit'
 import CharactersCell from './CharactersCell'
 
 // REDUX
@@ -30,7 +30,11 @@ class CharactersList extends Component {
     }
 
     renderFooter(){
-        return <ActivityIndicator amimating={this.props.isFetching} size='large' style={styles.spinner}/>
+        return (
+            <View style={styles.spinnerContainer}>
+                <Spinner isVisible={this.props.isFetching} type='FadingCircleAlt' style={styles.spinner}/>
+            </View>
+        )
     }
 
     render() {
@@ -88,8 +92,16 @@ const styles = StyleSheet.create({
         textAlign: 'center', 
         fontSize: 20
     },
+    spinnerContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     spinner: {
-        marginTop: 250,
-        color: 'grey'
+        margin: 10,
+        padding:10,
+        color: 'skyblue',
     }
+
 });

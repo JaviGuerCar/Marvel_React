@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text, Image } from 'react-native'
+import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native'
 import { Colors } from 'marvel_react/src/commons'
 import { Input, Button } from 'marvel_react/src/widgets'
+import ImagePicker from 'react-native-image-picker'
 
 
 // REDUX
@@ -21,14 +22,87 @@ class CharacterNew extends Component {
         }
     }
 
+    validateForm() {
+        let valid = true
+        let errors = {}
+
+        if(!this.state.name) {
+            errors.name = 'Introduce un nombre'
+            valid = false
+        }
+
+        if(!this.state.description) {
+            errors.description = 'Introduce una descripción'
+            valid = false
+        }
+
+        this.setState({ 
+            nameError: errors.name ? errors.name : '',
+            descriptionError: errors.description ? errors.description : '',
+        })
+
+        return valid
+    }
+
     onSubmit(){
+        if (this.validateForm()){
+            const characterData = {
+                name : this.state.name,
+                description: this.state.description,
+                image: this.state.image ? 'data:image/jpeg;base64,' + this.state.image.data : null
+            }
+
+            this.props.postCharacter(characterData)
+        }
 
     }
 
+    onSelectImage(){
+        const options = {
+            title: 'Selecciona la imagen',
+            storageOptions: {
+              skipBackup: true,
+              path: 'images'
+            }
+        };
+
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+          
+            if (response.didCancel) {
+              console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            }
+            else {
+              //let source = { uri: response.uri };
+          
+              // You can also display the image using data:
+              // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+          
+              this.setState({
+                image: response
+              });
+            }
+          });
+    }
+
     render(){
-        //console.log('this.state.name: ', this.state.name)
+        //console.log('this.state.image: ', this.state.image)
+        const imageUri = this.state.image ? { uri: this.state.image.uri } : null
+        const imageButtonText = this.state.image ? this.state.image.fileName : 'Elige una imagen'
         return (
             <View style={styles.container}>
+
+                <View style={styles.imageContainer}>
+                    <Image source={ imageUri } style={styles.imageBackground} resizeMode={'cover'} />
+                    <TouchableOpacity style={styles.button}
+                        onPress={() => this.onSelectImage()}>
+                        <Text style={styles.textButton}>{ imageButtonText }</Text>
+                    </TouchableOpacity>
+                </View>
+
                 <View style={styles.inputContainer}>
                     <Input 
                         onChangeText={ (v) => this.setState({name: v})}
@@ -69,7 +143,16 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(CharacterNew)
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        postCharacter: (data) => {
+            dispatch(CharactersActions.postCharacter(data))
+            //Actions.CharacterList()
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CharacterNew)
 
 const styles = StyleSheet.create({
     container: {
@@ -82,5 +165,28 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         margin:10,
-     }
+    },
+    imageContainer:{
+        alignItems:'center',
+        justifyContent:'center',
+        width: '100%',
+        height: 200,
+        backgroundColor: 'grey'
+    },
+    imageBackground: { 
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+    },
+    textButton: {
+        color: 'white',
+        fontWeight: 'bold'
+    },
+    button:{
+        padding: 10,
+        backgroundColor: 'rgba(155, 155, 155, 0.5)',
+        borderRadius: 10
+    }
 })

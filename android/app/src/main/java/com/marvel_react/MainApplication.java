@@ -11,6 +11,9 @@ import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
+import com.imagepicker.ImagePickerPackage; // ImagePicker
+import com.react.rnspinkit.RNSpinkitPackage; // Spinkit
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -22,7 +25,9 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
-          new MainReactPackage()
+          new MainReactPackage(),
+          new ImagePickerPackage(),
+          new RNSpinkitPackage()
       );
     }
 

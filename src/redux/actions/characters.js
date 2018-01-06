@@ -1,6 +1,7 @@
 import * as types from '../types/characters'
 import { fetch, post } from 'marvel_react/src/webservices/webservices'
 import * as constants from 'marvel_react/src/webservices/constants'
+import { Actions } from 'react-native-router-flux'
 
 
 // Función que devuelve el tipo y el valor que actualiza el reducer
@@ -9,7 +10,6 @@ function updateCharactersList(value) {
         type: types.CHARACTERS_UPDATE_LIST,
         value: value
     }
-    
 }
 
 function setCharactersFetching(value){
@@ -46,4 +46,13 @@ export function fetchCharactersList() {
         });
 
     }
+}
+
+// Función que haría el post, lo dejamos ya que el WS no lo permite
+export function postCharacter(data){
+    return (dispatch, getState) => {
+        console.log('Los datos pasados son: ', data)
+        Actions.pop()
+    }
+    
 }
