@@ -38,7 +38,7 @@ class CharactersList extends Component {
     }
 
     render() {
-        console.log('this.props.character: ', this.props.character)
+        //console.log('this.props.character: ', this.props.character)
         return (
             <View style={styles.container}>
                 <FlatList

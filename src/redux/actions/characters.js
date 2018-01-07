@@ -51,7 +51,7 @@ export function fetchCharactersList() {
 // Función que haría el post, lo dejamos ya que el WS no lo permite
 export function postCharacter(data){
     return (dispatch, getState) => {
-        console.log('Los datos pasados son: ', data)
+        console.log('Nuevo personaje insertado: ', data)
         Actions.pop()
     }
     
